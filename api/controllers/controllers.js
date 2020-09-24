@@ -123,3 +123,31 @@ module.exports.tambahPeserta = async function tambahPeserta(reqs, resp) {
         console.log("Peserta Gagal Ditambahkan");
     }
 }
+module.exports.lihatSemuaPeserta = async function lihatSemuaPeserta(reqs, resp) {
+    await connectDB();
+    console.log("Menampilkan Semua Peserta...");
+    try {
+        await seminarCollection.findById(reqs.params.id, (err, res) => {
+            resp.json(res.peserta);
+        })
+        console.log("Berhasil Menampilkan Semua Peserta");
+    } catch (error) {
+        console.log("Gagal Menampilkan Semua Peserta");
+    }
+}
+module.exports.lihatPeserta = async function lihatPeserta(reqs, resp) {
+    await connectDB();
+    console.log("Menampilkan Informasi Peserta...");
+    try {
+        await seminarCollection.findById(reqs.params.id, (err, res) => {
+            // console.log(`res : ${res}`)
+            let peserta = res.peserta.filter((entry) => entry._id == reqs.params.userid)
+            // console.log(reqs.params.userid);
+            resp.json(peserta[0]);
+        })
+
+        console.log("Berhasil Menampilkan Informasi Peserta");
+    } catch (error) {
+        console.log("Gagal Menampilkan Informasi Peserta")
+    }
+}
