@@ -151,3 +151,22 @@ module.exports.lihatPeserta = async function lihatPeserta(reqs, resp) {
         console.log("Gagal Menampilkan Informasi Peserta")
     }
 }
+module.exports.hapusPeserta = async function hapusPeserta(reqs, resp) {
+    await connectDB();
+    mongoose.set('useFindAndModify', false);
+    console.log("Menghapus Peserta Seminar...");
+    try {
+        await seminarCollection.findByIdAndUpdate({
+            _id: reqs.params.id
+        }, {
+            $pull: {
+                peserta: {
+                    _id: reqs.params.userid
+                }
+            }
+        })
+        console.log("Peserta Berhasil Dihapus");
+    } catch (error) {
+        console.log("Peserta Gagal Dihapus");
+    }
+}
