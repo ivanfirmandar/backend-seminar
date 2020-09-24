@@ -27,10 +27,12 @@ module.exports.inputDataSeminar = async function inputDataSeminar(reqs, resp) {
     console.log("Menyimpan Data...");
     try {
         await newSeminar.save();
+        console.log("Data Berhasil Disimpan")
+        resp.json("Data Berhasil Disimpan");
     } catch (err) {
         console.log("Data Gagal Disimpan")
     }
-    console.log("Data Berhasil Disimpan")
+
 }
 
 module.exports.hapusDataSeminar = async function hapusDataSeminar(reqs, resp) {
@@ -40,35 +42,32 @@ module.exports.hapusDataSeminar = async function hapusDataSeminar(reqs, resp) {
         await seminarCollection.deleteOne({
             _id: reqs.params.id
         })
-        console.log("Berhasil Dihapus")
+        console.log("Seminar Berhasil Dihapus")
+        resp.json("Seminar Berhasil Dihapus");
     } catch (error) {
         console.log("Gagal Dihapus");
     }
 }
 
-module.exports.ubahDataSeminar = async function ubahDataSeminar(idubah) {
+module.exports.ubahDataSeminar = async function ubahDataSeminar(reqs, resp) {
 
     let dataSeminarBaru = {
-        nama_seminar: "Seminar Malaysia",
-        pemateri: "Ivan Roland",
-        tanggal: 23 - 1 - 2012,
-        durasi_menit: 120,
-        peserta: [{
-            _id: shortid.generate(),
-            nama: "Galang Zulhan",
-            email: "galangzulhan@gmail.com",
-            nomor: 12
-        }]
+        nama_seminar: reqs.body.nama_seminar,
+        pemateri: reqs.body.pemateri,
+        tanggal: reqs.body.tanggal,
+        durasi_menit: reqs.body.durasi_menit,
     }
+    mongoose.set('useFindAndModify', false);
     await connectDB();
     console.log("Mengubah Data...");
     try {
         await seminarCollection.findOneAndUpdate({
-            _id: idubah
+            _id: reqs.params.id
         }, dataSeminarBaru, {
             new: true
         })
-        console.log("Data Berhasil diubah");
+        console.log("Data Berhasil Diubah");
+        resp.json("Seminar Berhasil Diubah")
     } catch (error) {
         console.log("Data Gagal Diubah");
     }
@@ -119,6 +118,7 @@ module.exports.tambahPeserta = async function tambahPeserta(reqs, resp) {
             }
         })
         console.log("Peserta Berhasil Ditambahkan");
+        resp.json("Peserta Berhasil Ditambahkan")
     } catch (error) {
         console.log("Peserta Gagal Ditambahkan");
     }
@@ -166,6 +166,7 @@ module.exports.hapusPeserta = async function hapusPeserta(reqs, resp) {
             }
         })
         console.log("Peserta Berhasil Dihapus");
+        resp.json("Peserta Berhasil dihapus");
     } catch (error) {
         console.log("Peserta Gagal Dihapus");
     }
